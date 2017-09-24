@@ -20,7 +20,6 @@ Item {
         anchors.bottomMargin: 8
         anchors.topMargin: 0
 
-
         GridLayout {
             id: gridLayout
             width: parent.width * 0.5
@@ -29,13 +28,13 @@ Item {
             anchors.left: parent.left
             anchors.bottom: dial_buttons.top
             anchors.top: parent.top
+
             Repeater{
                 id: dial_nums
                 model:ListModel {
                     ListElement {
                         name: "1"
                     }
-
                     ListElement {
                         name: "2"
                     }
@@ -76,24 +75,44 @@ Item {
                         name: "#"
                     }
                 }
+
                 delegate: Item {
                     Layout.fillHeight: true
                     Layout.fillWidth: true
+
                     Text{
                         text:model.name
+                        font.bold: true
                         font.pointSize: height > 0 ? height * 0.6 : 12
                         verticalAlignment: Text.AlignVCenter
                         horizontalAlignment: Text.AlignHCenter
                         anchors.fill: parent
+                        scale: mouseArea.pressed ? 0.96 : 1.0
 
                         MouseArea {
                             id: mouseArea
                             anchors.fill: parent
                             onClicked: dialer_num.insert(dialer_num.cursorPosition,parent.text)
                         }
+
                     }
+
+                    Rectangle {
+                          id: dial_field
+                          anchors.horizontalCenter: parent.horizontalCenter
+                          anchors.verticalCenter: parent.verticalCenter
+                          height: parent.height-15
+                          width: height
+                          border.color: "black"
+                          border.width: 4
+                          radius: width*0.5-20
+                          color: mouseArea.pressed ? "grey" : "white"
+                          scale: mouseArea.pressed ? 0.96 : 1.0
+                          z: -1
+                      }
                 }
             }
+
         }
 
         Item {
@@ -104,15 +123,19 @@ Item {
             anchors.left: parent.left
 
             Rectangle {
-                id:dial
+                id: dial
                 width: height
-                color: "#558b2f"
+                border.color: "white"
+                border.width: 4
+                radius: width*0.5
                 anchors.left: parent.left
                 anchors.leftMargin: 8
                 anchors.top: parent.top
                 anchors.topMargin: 8
                 anchors.bottom: parent.bottom
                 anchors.bottomMargin: 8
+                color: mouseAreaDial.pressed ? "grey" : "#558b2f"
+                scale: mouseAreaDial.pressed ? 0.96 : 1.0
 
                 Image {
                     id: image1
@@ -122,25 +145,33 @@ Item {
                     anchors.topMargin: parent.height*0.1
                     fillMode: Image.PreserveAspectFit
                     anchors.fill: parent
-                    source: "qrc:/qml/icons/svg/android-call.svg"
+                    scale: mouseAreaDial.pressed ? 0.96 : 1.0
+                    source: "../icons/svg/android-call.svg"
                 }
+
                 MouseArea {
+                    id: mouseAreaDial
                     anchors.fill: parent
                     onClicked: {
                         vcm.dial(dialer_num.text, "");
                     }
+
                 }
             }
 
             Rectangle {
                 id:mic
                 width: height
-                color: "#1e88e5"
+                border.color: "white"
+                border.width: 4
+                radius: width*0.5
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.top: parent.top
                 anchors.topMargin: 8
                 anchors.bottom: parent.bottom
                 anchors.bottomMargin: 8
+                color: mouseAreaMic.pressed ? "grey" : "#1e88e5"
+                scale: mouseAreaMic.pressed ? 0.96 : 1.0
 
                 Image {
                     anchors.rightMargin: parent.width*0.1
@@ -149,9 +180,11 @@ Item {
                     anchors.topMargin: parent.height*0.1
                     fillMode: Image.PreserveAspectFit
                     anchors.fill: parent
-                    source: "qrc:/qml/icons/svg/mic-a.svg"
+                    scale: mouseAreaMic.pressed ? 0.96 : 1.0
+                    source: "../icons/svg/mic-a.svg"
                 }
                 MouseArea {
+                    id: mouseAreaMic
                     anchors.fill: parent
                     onClicked: {
                         hands_free.voiceRecognition = true;
@@ -162,12 +195,16 @@ Item {
             Rectangle {
                 id:hangup
                 width: height
-                color: "#c62828"
+                border.color: "white"
+                border.width: 4
+                radius: width*0.5
                 anchors.right: parent.right
                 anchors.rightMargin: 8
                 anchors.top: parent.top
                 anchors.bottomMargin: 8
                 anchors.topMargin: 8
+                color: mouseAreaHangup.pressed ? "grey" : "#c62828"
+                scale: mouseAreaHangup.pressed ? 0.96 : 1.0
                 anchors.bottom: parent.bottom
 
                 Image {
@@ -178,11 +215,13 @@ Item {
                     anchors.topMargin: parent.height*0.15
                     rotation: 135
                     anchors.fill: parent
-                    source: "qrc:/qml/icons/svg/android-call.svg"
+                    scale: mouseAreaHangup.pressed ? 0.96 : 1.0
+                    source: "../icons/svg/android-call.svg"
                     fillMode: Image.PreserveAspectFit
                 }
 
                 MouseArea {
+                    id: mouseAreaHangup
                     anchors.fill: parent
                     onClicked: {
                         vcm.hangupAll();
@@ -194,6 +233,7 @@ Item {
         TextField {
             id: dialer_num
             text: "+"
+            font.bold: false
             font.pointSize: 30
             anchors.left: gridLayout.right
             anchors.right: parent.right
@@ -427,6 +467,7 @@ Item {
             }
         }
 
+
     }
 
     Item {
@@ -640,5 +681,7 @@ Item {
         id:hands_free
         modemPath: ofonomodem.modemPath
     }
+
+
 
 }
